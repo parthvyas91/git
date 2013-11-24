@@ -7,25 +7,18 @@ class updateEntry
 {
     public function __construct()
     {
-	
         $this->model = new entry_model();    
     } 
-
- public function displayUpdatedEntry($view)
+    
+    public function displayUpdatedEntry($view)
     {
-	
-	
-	
-
-		
-		$this->$view = new $view($view);
-	    
+        $this->$view = new $view($view);
     }
-	public function updateIntoEntry($title,$price)
-	{
-		$this->model = new entry_model();
-		$this->model->update_Game($title,$price);
-	}
+    
+    public function updateIntoEntry($title,$price)
+    {
+        $this->model = new entry_model();
+        $this->model->update_Game($title,$price);
+    }
 }
-
 ?>

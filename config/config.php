@@ -18,6 +18,4 @@ function updateAllEntries()
     global $data;
     $data = getAllEntries();
 }
-
 ?>
-

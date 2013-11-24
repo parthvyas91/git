@@ -184,5 +184,3 @@ function updateEntry()
 <body>
 </body>
 </html>
-
-

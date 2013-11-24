@@ -1,6 +1,6 @@
 <?php
-    require_once('views/baseview.php'); 
-    class entryView extends baseview{ 
+require_once('views/baseview.php'); 
+class entryView extends baseview { 
     public function __construct()
     {      
 ?>  
@@ -8,22 +8,17 @@
         
         
              
-	<?php    
-	$this->model = new entry_model();
-	$Games = $this->model->get_GameList();
+    <?php    
+    $this->model = new entry_model();
+    $Games = $this->model->get_GameList();
 
-    	$this->view = new baseview();
+        $this->view = new baseview();
 
         $this->view->display($Games);
 ?>
 
 
-<?php 
-      
-    }     
-   
-    }   
-    
-
-    
+<?php
+    }
+}
 ?>

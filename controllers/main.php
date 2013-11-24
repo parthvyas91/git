@@ -11,12 +11,7 @@ class main{
     
     public function display($view)
     {
-	
-	
         $this->$view = new $view();
     }
-	
-
-    
 }
 ?>

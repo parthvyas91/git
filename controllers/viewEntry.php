@@ -1,25 +1,17 @@
 <?php
-
 include_once("./models/entry_model.php");
-include("./views/entryView.php");
-	
+include_once("./views/entryView.php");
 
 class viewEntry
 {
     public function __construct()
     {
-	
         $this->model = new entry_model();    
     } 
 
- public function displayEntry($view)
+    public function displayEntry($view)
     {
-	
-	
-
-		
-		$this->$view = new $view($view);
-	    
+        $this->$view = new $view($view);
     }
 }
 

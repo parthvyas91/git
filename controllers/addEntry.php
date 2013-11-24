@@ -7,28 +7,24 @@ include_once("./views/addView.php");
 
 class addEntry
 {
+    private model;
+    
     public function __construct()
     {
-    
         $this->model = new entry_model();    
     } 
 
- public function displayEntry($view,$checkerror)
+    public function displayEntry($view,$checkerror)
     {
-    
-    include_once("./views/mainView.php");
-    $this->view = new $view($checkerror);
-        
+        include_once("./views/mainView.php");
+        $this->view = new $view($checkerror);
     }
-  public function addIntoEntry($title,$gserial,$price,$date,$stock,$sold)
+    public function addIntoEntry($title,$gserial,$price,$date,$stock,$sold)
     {
-    $this->model = new entry_model();
-    return $errorMessage = $this->model->insert_Inventory($gserial,$stock,$sold);
-    $this->model->insert_Game($title,$gserial,$price,$date);
-    echo $errorMessage;
-    
-    
+        $this->model = new entry_model();
+        return $errorMessage = $this->model->insert_Inventory($gserial,$stock,$sold);
+        $this->model->insert_Game($title,$gserial,$price,$date);
+        echo $errorMessage;
     }
 }
-
 ?>
