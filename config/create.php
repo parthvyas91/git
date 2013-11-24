@@ -47,7 +47,7 @@ if (mysqli_multi_query($con, $create_tables)) {
 }
 
 /* Get rid of results of query */
-while (mysqli_more_results($mysqli) && mysqli_next_result($mysqli));
+while (mysqli_more_results($con) && mysqli_next_result($con));
 
 /*
 $q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','54.50','". date("Y-m-d H:i:s") ."')";

@@ -10,8 +10,8 @@ define ("SITENAME", "Game Store");
 define ("USERNAME", 'root');
 define ("PASSWORD", "");
 
-$conf['BASEURL'] = 'http://localhost/git/';
-$conf['DOC_ROOT'] = '/opt/lampp/htdocs/git/';
+$conf['BASEURL'] = 'http://localhost/cs157a/git/';
+$conf['DOC_ROOT'] = '/opt/lampp/htdocs/cs157a/git/';
 $conf['db_host'] = 'localhost';
 $conf['db_user'] = 'root';
 $conf['db_pass'] = 'password';
