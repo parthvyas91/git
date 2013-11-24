@@ -28,51 +28,46 @@ if(isset($_GET['c']) && in_array($_GET['c'],$controllers_available)) {
 $controller();
 function main()
 {
-    
-    
     if(isset($_GET['view']))
     {
-            if("mainView"==$_GET['view'])
-            {
+        if("mainView"==$_GET['view'])
+        {
             $view = "mainView";
-                }
-         else
-            {
+        }
+        else
+        {
             $view = $_GET['view'];
-            }
+        }
     }
     else
-{
-    $view = "mainView";
-}
-require_once("./controllers/main.php");
+    {
+        $view = "mainView";
+    }
+    require_once("./controllers/main.php");
     $entryControl = new main();
     $entryControl->display($view);
-    
 }
 function addEntry()
 {
     if(isset($_POST["title"]))
+    {
+        $title = $_POST["title"];
+    }
+    if(isset($_POST['view']))
+    {
+        if("mainView"==$_POST['view'])
         {
-            $title = $_POST["title"];
-        }
-    
-        if(isset($_POST['view']))
-        {
-                if("mainView"==$_POST['view'])
-                {
-                $view = "mainView";
-                    }
-             else
-                {
-                $view = $_POST['view'];
-                }
+            $view = "mainView";
         }
         else
-    {
-    $view = "addView";
+        {
+            $view = $_POST['view'];
+        }
     }
-        
+    else
+    {
+        $view = "addView";
+    } 
 
     if(isset($_POST['addGame']) && $_POST['addGame'] == "game")
     {
@@ -103,92 +98,74 @@ function addEntry()
     }
     else
     {
-            require_once("./controllers/addEntry.php");
+        require_once("./controllers/addEntry.php");
         $entryControl = new addEntry();
         $entryControl->displayEntry($view,false);
     }
-
 }
 function viewEntry()
 {
-    
-    
-        if(isset($_POST['view']))
+    if(isset($_POST['view']))
+    {
+        if("mainView"==$_POST['view'])
         {
-                if("mainView"==$_POST['view'])
-                {
-                $view = "mainView";
-                    }
-             else
-                {
-                $view = $_POST['view'];
-                }
-        
+            $view = "mainView";
         }
-else
-{
-    $view = "entryView";
-}
-        require_once("./controllers/viewEntry.php");
-        $entryControl = new viewEntry();
-        $entryControl->displayEntry($view);
-        
+        else
+        {
+            $view = $_POST['view'];
+        }
+    }
+    else
+    {
+        $view = "entryView";
+    }
+    require_once("./controllers/viewEntry.php");
+    $entryControl = new viewEntry();
+    $entryControl->displayEntry($view);
 }
 function gameDescription()
 {
-    
-    
-        if(isset($_GET['view']))
+    if(isset($_GET['view']))
+    {
+        if("mainView"==$_GET['view'])
         {
-                if("mainView"==$_GET['view'])
-                {
-                $view = "mainView";
-                    }
-             else
-                {
-                $view = $_GET['view'];
-                }
-        
+            $view = "mainView";
         }
-else
-{
-    echo "no";
-}
-        require_once("./controllers/gameDetailEntry.php");
-        $entryControl = new gameDetailEntry();
-        $entryControl->displayEntry($view,$_GET['game']);
-        
+        else
+        {
+            $view = $_GET['view'];
+        }
+    }
+    else
+    {
+        echo "no";
+    }
+    require_once("./controllers/gameDetailEntry.php");
+    $entryControl = new gameDetailEntry();
+    $entryControl->displayEntry($view,$_GET['game']);
 }
 function updateEntry()
 {
-    
-    
-        if(isset($_POST['view']))
+    if(isset($_POST['view']))
+    {
+        if("mainView"==$_POST['view'])
         {
-                if("mainView"==$_POST['view'])
-                {
-                $view = "mainView";
-                    }
-             else
-                {
-                $view = $_POST['view'];
-                }
-        
+            $view = "mainView";
         }
-else
-{
-    $view = "updateView";
+        else
+        {
+            $view = $_POST['view'];
+        }
+    }
+    else
+    {
+        $view = "updateView";
+    }
+    require_once("./controllers/updateEntry.php");
+    $entryControl = new updateEntry();
+    $entryControl->displayUpdatedEntry($view);
 }
-        require_once("./controllers/updateEntry.php");
-        $entryControl = new updateEntry();
-        $entryControl->displayUpdatedEntry($view);
-        
-}
-
-
-
-
-
 ?>
 <!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
