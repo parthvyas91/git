@@ -2,59 +2,55 @@
 
 require_once('config.php');
 
-$con=mysqli_connect("127.0.0.1",USERNAME,PASSWORD);
-
-
+$con=mysqli_connect($conf['db_host'],$conf['db_user'],$conf['db_pass']);
 
 // Check connection
-/*
 if (mysqli_connect_errno($con))
-  {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  }
+{
+    die("Failed to connect to MySQL: " . mysqli_connect_error() . "\n");
+}
 
-$sql = "DROP DATABASE GameStore";
-if (mysqli_query($con,$sql)) {
+// Create a fresh database
+$query = "DROP DATABASE IF EXISTS GameStore;";
+if (mysqli_query($con,$query)) {
     echo "Database my_db was successfully dropped\n";
 } else {
-    echo 'Error dropping database: ' . mysqli_error() . "\n";
+    die('Error dropping database: ' . mysqli_error() . "\n");
 }
-*/
 
 //Create database
-$sql="CREATE DATABASE GameStore";
-if (mysqli_query($con,$sql)) 
+$query="CREATE DATABASE GameStore;";
+if (mysqli_query($con,$query)) 
 {
-    echo "Database my_db was successfully dropped\n";
-} else 
-{
-    echo 'Error dropping database: ' . mysqli_error($con) . "\n";
-}
-
-
-$con=mysqli_connect("127.0.0.1",USERNAME,PASSWORD,"GameStore");
-// Create table
-
-$sql="CREATE TABLE Game(Title CHAR(30),gSerial INT PRIMARY KEY,Price FLOAT, updatedAt INT,CONSTRAINT FOREIGN KEY(gSerial) REFERENCES Inventory(gSerial))";
-
-$sqq = "CREATE TABLE Inventory(gSerial INT PRIMARY KEY,inStock INT DEFAULT 0,numSold INT DEFAULT 0)";
-
-// Execute query
-if (mysqli_query($con,$sqq)) {
-    echo "Database my_db was successfully dropped\n";
+    echo "Database GameStore was successfully created.\n";
 } else {
-    echo 'Error dropping database: ' . mysqli_error($con) . "\n";
+    die('Error dropping database: ' . mysqli_error($con) . "\n");
 }
-// Execute query
-if (mysqli_query($con,$sql)) {
-    echo "Database my_db was successfully dropped\n";
+
+// Use GameStore database
+mysqli_select_db($con, 'GameStore');
+
+// Create tables
+$create_tables= <<<EOF
+CREATE TABLE Games(Title VARCHAR(40) NOT NULL,GSerial INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,Price FLOAT(2,2) NOT NULL,updatedAt DATETIME);
+CREATE TABLE Inventory(GSerial INT UNSIGNED NOT NULL PRIMARY KEY,InStock INT NOT NULL DEFAULT 0,NumSold INT NOT NULL DEFAULT 0,CONSTRAINT FOREIGN KEY(GSerial) REFERENCES Game(GSerial));
+CREATE TABLE GameDetails(GSerial INT UNSIGNED NOT NULL PRIMARY KEY, Genre VARCHAR(10) NOT NULL, ESRBRating VARCHAR(3) NOT NULL, GameScore INT, Year YEAR NOT NULL, CONSTRAINT FOREIGN KEY(GSerial) REFERENCES Game(GSerial));
+CREATE TABLE Customers(FirstName VARCHAR(15) NOT NULL, MidInitial VARCHAR(1), LastName VARCHAR(15) NOT NULL, Email VARCHAR(50) NOT NULL PRIMARY KEY, Age INT NOT NULL, CustomerID INT UNSIGNED NOT NULL AUTO_INCREMENT, Gender CHAR(1), CHECK (Email NOT IN (SELECT Email in Customers)));
+CREATE TABLE OrdersPlaced(OrderID INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, CustomerID INT UNSIGNED NOT NULL, GSerial INT UNSIGNED NOT NULL, NumBought INT NOT NULL, CHECK (CustomerID IN (SELECT CustomerID FROM Customers)), CHECK (NumBought <= (SELECT InStock IN Inventory WHERE Inventory.GSerial = GSerial)));
+EOF;
+
+// Execute multi_query
+if (mysqli_multi_query($con, $create_tables)) {
+    echo "Successfully created tables Games, Inventory, GameDetails, Customers, and OrdersPlaced...\n";
 } else {
-    echo 'Error dropping database: ' . mysqli_error($con) . "\n";
+    die("Error creating tables:" . mysqli_error($con) . "\n");
 }
 
-$con=mysqli_connect("127.0.0.1",USERNAME,PASSWORD,"GameStore");
+/* Get rid of results of query */
+while (mysqli_more_results($mysqli) && mysqli_next_result($mysqli));
 
-$q2 = "Insert into Game Values('Grand Theft Auto','123','49.50','1')";
+/*
+$q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','54.50','". date("Y-m-d H:i:s") ."')";
 $q1 = "Insert into Inventory Values('123','10','5')";
 $q4 = "Insert into Game Values('SUPER MARIO','111','49.50','2')";
 $q3 = "Insert into Inventory Values('111','10','5')";
@@ -62,7 +58,6 @@ $q6 = "Insert into Game Values('Pokemon','112','49.50','2')";
 $q5 = "Insert into Inventory Values('112','10','5')";
 $q8 = "Insert into Game Values('Final Fantasy','113','49.50','2')";
 $q7 = "Insert into Inventory Values('113','10','5')";
-
 
 if(mysqli_query($con,$q1))
 {
@@ -89,5 +84,5 @@ mysqli_query($con,$q6);
 mysqli_query($con,$q7);
 
 mysqli_query($con,$q8);
-
+*/
 ?>
