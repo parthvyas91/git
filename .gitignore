@@ -1,0 +1,6 @@
+#Apple
+__MACOSX/
+.DS_Store
+
+#Temp files from editor
+.php~
