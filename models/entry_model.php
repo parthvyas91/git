@@ -1,5 +1,5 @@
 <?php
-
+//require_once("./views/mainView.php");
 class entry_model{
      public function get_GameList()
     {
@@ -18,6 +18,32 @@ $con=mysqli_connect("127.0.0.1",USERNAME,PASSWORD,"GameStore");
 	while($row = mysqli_fetch_array($result))
 	  {
 	  array_push($string,$row['Title'],"<br>");
+	 }
+	return $string;
+	}
+	else
+	  {
+	  return "Error creating database: " . mysqli_error($con);
+	  }
+
+    }
+    public function get_GameDetail($title)
+    {
+$con=mysqli_connect("127.0.0.1",USERNAME,PASSWORD,"GameStore");
+	// Check connection
+	if (mysqli_connect_errno($con))
+  	{
+  	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  	}
+	$sql = "Select Title,Price From Game Where Title='$title'";
+
+	$result = mysqli_query($con,$sql);
+	$string= array();
+	if ($result)
+  	{
+	while($row = mysqli_fetch_array($result))
+	  {
+	  array_push($string,$row['Title'],$row['Price'],"<br>");
 	 }
 	return $string;
 	}
@@ -61,15 +87,16 @@ $con=mysqli_connect("127.0.0.1",USERNAME,PASSWORD,"GameStore");
 
 	$sql = "INSERT INTO Inventory (gSerial,inStock,numSold) VALUES ('$gserial','$Stock','$Sold')";
 
-	//mysqli_query($con,$sql);
+
 		if (!mysqli_query($con,$sql))
 	  {
-	  echo ('Error: ' . mysqli_error($con));
+	  
+		return 'false';
 	  }
 	else
 	{
-	$this->view = new addView();
-	echo "1 record added";
+	
+	return 'true';
 	}
 
 	    }

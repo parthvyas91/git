@@ -1,6 +1,7 @@
 <?php
 
 include_once("./models/entry_model.php");
+include("./views/gameDetailView.php");
 
 class gameDetailEntry
 {
@@ -10,19 +11,12 @@ class gameDetailEntry
         $this->model = new entry_model();    
     } 
 
- public function displayEntry($view)
+ public function displayEntry($view,$title)
     {
-	//include("./views/mainView.php");
-	//include("./views/addPoem.php");
-	include("./views/gameDetailView.php");
-	
-        //$this->$view = new $view($poem);
-	
-
-		
-		$this->$view = new $view($view);
+		$this->$view = new $view($title);
 	    
     }
+
 }
 
 ?>

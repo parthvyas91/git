@@ -1,5 +1,7 @@
 <?php
 include_once("./models/entry_model.php");
+include("./views/mainView.php");
+include("./views/gameDetailView.php");
 
 class main{
     public function __construct()
@@ -9,7 +11,7 @@ class main{
     
     public function display($view)
     {
-	include("./views/mainView.php");
+	
 	
         $this->$view = new $view();
     }

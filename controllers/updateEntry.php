@@ -1,6 +1,7 @@
 <?php
 
 include_once("./models/entry_model.php");
+include("./views/updateView.php");
 
 class updateEntry
 {
@@ -12,11 +13,8 @@ class updateEntry
 
  public function displayUpdatedEntry($view)
     {
-	//include("./views/mainView.php");
-	//include("./views/addPoem.php");
-	include("./views/updateView.php");
 	
-        //$this->$view = new $view($poem);
+	
 	
 
 		

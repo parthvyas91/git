@@ -1,15 +1,34 @@
 <?php
     require_once('views/baseview.php'); 
     class addView extends baseview{ 
-    public function __construct()
+    public function __construct($checkerror)
     {      
 ?>  
+	<head>
+	<script>
+	<?php
+	
+	$i = $checkerror;
+	?>
+	function myFunction()
+	{
+	var i = '<?= json_encode( $i); ?>';
+	if(i == "true")
+	{
+	alert("ERROR: Please enter a different key, the key you have entered is already in use!");
+	}
+	}
+	</script>
+	</head>
+	<body onload="myFunction()">
         <h1>Add Game</h1>
         <div id="mainWrapper">
         <div id="leftWrapper">
         
         
-
+	
+	
+	
 	<!-- action="index.php?c=poem" -->
         <form name="inputGame" action="index.php?c=addEntry" method="post">
         Insert New Game
@@ -34,7 +53,7 @@
         </div>  
 	
         
-              
+              </body>
 	<?php    
 	
 	

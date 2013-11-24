@@ -2,8 +2,8 @@
 
 include_once("./models/entry_model.php");
 include_once("./views/entryView.php");
-include_once("./views/addPoem.php");
 include_once("./views/addView.php");
+
 
 class addEntry
 {
@@ -13,20 +13,19 @@ class addEntry
         $this->model = new entry_model();    
     } 
 
- public function displayEntry($view)
+ public function displayEntry($view,$checkerror)
     {
-	include("./views/mainView.php");
-		$this->$view = new $view();
+	
+	include_once("./views/mainView.php");
+	$this->view = new $view($checkerror);
 	    
     }
   public function addIntoEntry($title,$gserial,$price,$date,$stock,$sold)
 	{
-	//include("./views/mainView.php");
-	
-	//$this->entry->displayEntry('mainView');
 	$this->model = new entry_model();
-	$this->model->insert_Inventory($gserial,$stock,$sold);
+	return $errorMessage = $this->model->insert_Inventory($gserial,$stock,$sold);
 	$this->model->insert_Game($title,$gserial,$price,$date);
+	echo $errorMessage;
 	
 	
 	}

@@ -1,6 +1,8 @@
 <?php
 
 include_once("./models/entry_model.php");
+include("./views/entryView.php");
+	
 
 class viewEntry
 {
@@ -12,11 +14,7 @@ class viewEntry
 
  public function displayEntry($view)
     {
-	//include("./views/mainView.php");
-	//include("./views/addPoem.php");
-	include("./views/entryView.php");
 	
-        //$this->$view = new $view($poem);
 	
 
 		
