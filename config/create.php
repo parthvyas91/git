@@ -83,7 +83,7 @@ if (mysqli_multi_query($con, $orderTrigger)) {
 /* Get rid of results of query */
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
-$cancelOrderTrigger = "DROP TRIGGER IF EXISTS 'CancelledOrder';
+$cancelOrderTrigger = "DROP TRIGGER IF EXISTS `CancelledOrder`;
 DELIMITER //
 CREATE TRIGGER `CancelledOrder` 
 AFTER DELETE ON `Orders` 
