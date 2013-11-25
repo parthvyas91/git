@@ -80,6 +80,9 @@ if (mysqli_multi_query($con, $orderTrigger)) {
     die("Error creating Order trigger (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
 }
 
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
 $cancelOrderTrigger = "DROP TRIGGER IF EXISTS 'CancelledOrder';
 DELIMITER //
 CREATE TRIGGER `CancelledOrder` 
@@ -97,13 +100,26 @@ if (mysqli_multi_query($con, $cancelOrderTrigger)) {
     die("Error creating cancelOrder trigger (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
 }
 
-$listByGenre = "DELIMITER //
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$listByGenre = "DROP PROCEDURE IF EXISTS `listGamesByGenre`;
+DELIMITER //
 CREATE PROCEDURE `listGamesByGenre`(IN `g` VARCHAR(40)) 
 BEGIN 
 SELECT `Title`, `Year`, `Genre`, `Price` FROM `Games` INNER JOIN `GameDetails` using(`GSerial`) WHERE Genre=g 
 ORDER BY `Title` DESC 
 END //
 DELIMITER ;";
+
+if (mysqli_multi_query($con, $listByGenre)) {
+    echo "Successfully created listByGenre procedure...\n";
+} else {
+    die("Error creating listByGenre procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
 
 /*
 $q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','54.50','". date("Y-m-d H:i:s") ."')";
