@@ -175,7 +175,7 @@ if (mysqli_multi_query($con, $listByYear)) {
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
 $listByLess = "DROP PROCEDURE IF EXISTS `listGamesUnder`;
-CREATE PROCEDURE `listGamesUnder`(IN `thePrice` FLOAT(2,2))
+CREATE PROCEDURE `listGamesUnder`(IN `thePrice` FLOAT(10,2))
 BEGIN
 SELECT Title, Genre, ESRBRating, GameScore, Price
 FROM Games `g` INNER JOIN GameDetails `gd` using(GSerial)
@@ -379,93 +379,94 @@ if (mysqli_multi_query($con, $listCustomersOfGame)) {
 
 /* Get rid of results of query */
 while (mysqli_more_results($con) && mysqli_next_result($con));
+
 $multi_query = "SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','59.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('1','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('1','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('1','Action-Adventure','M','99','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Assasin\'s Creed IV Black Flag','59.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('2','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('2','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('2','Action-Adventure','M','95','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Call of Duty Ghosts','59.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('3','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('3','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('3','FPS','M','92','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Battlefield 4','59.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('4','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('4','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('4','FPS','M','75','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Starcraft II','39.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('5','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('5','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('5','RTS','T','85','2010');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Diablo III','39.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('6','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('6','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('6','Action-RPG','M','75','2012');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Warcraft III : BattleChest','19.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('7','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('7','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('7','RTS','T','89','2004');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('The Settlers VII','9.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('8','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('8','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('8','RTS','E','87','2010');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Total War Rome 2','59.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('9','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('9','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('9','RTS','M','91','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Xcomm enemy unknown','19.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('10','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('10','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('10','RTS','M','75','2012');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Mario Party: Island Tour','39.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('11','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('11','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('11','Family-Party','E','75','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Guild Wars 2','59.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('12','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('12','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('12','MMORPG','T','89','2012');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Pokemon White','29.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('13','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('13','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('13','RPG-Adventure','E','89','2010');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Pokemon Black','29.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('14','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('14','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('14','RPG-Adventure','E','89','2010');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Crysis 3','29.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('15','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('15','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('15','FPS','M','87','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Company of Heroes 2','59.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('16','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('16','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('16','RTS','M','94','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Prince of Persia : The forgotten Sand','49.50',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('17','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('17','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('17','Action-Adventure','T','75','2010');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Lego Batman 2','19.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('18','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('18','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('18','Action-Adventure','E','77','2012');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Lego Lord of the Ring','29.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('19','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('19','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('19','Action-Adventure','E','78','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Lego Pirates of the Carribean','19.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('20','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('20','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('20','Action-Adventure','E','81','2011');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Lego Marvel Super heroes','29.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('21','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('21','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('21','Action-Adventure','E','89','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Lego StarWars III','19.99',@now);
-Insert into Inventory(GSerial, InStock, NumSold) Values('22','100','5');
+Insert into Inventory(GSerial, InStock, NumSold) Values('22','100','0');
 Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('22','Action-Adventure','E','91','2011');";
 
 if (mysqli_multi_query($con, $multi_query)) {
@@ -476,129 +477,6 @@ if (mysqli_multi_query($con, $multi_query)) {
 
 /* Get rid of results of query */
 while (mysqli_more_results($con) && mysqli_next_result($con));
-
-/*$q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','59.99','1')";
-$q1 = "Insert into Inventory(GSerial, InStock, NumSold) Values('1','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('1','Action-Adventure','M','99','2013')";
-
-$q4 = "Insert into Games(Title, Price, updatedAt) Values('Assasin's Creed IV Black Flag','59.99','2')";
-$q3 = "Insert into Inventory(GSerial, InStock, NumSold) Values('2','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('2','Action-Adventure','M','95','2013')";
-
-$q6 = "Insert into Games(Title, Price, updatedAt) Values('Call of Duty Ghosts','59.99','3')";
-$q5 = "Insert into Inventory(GSerial, InStock, NumSold) Values('3','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('1003','FPS','M','92','2013')";
-
-$q8 = "Insert into Games(Title, Price, updatedAt) Values('Battlefield 4','59.99','4')";
-$q7 = "Insert into Inventory(GSerial, InStock, NumSold) Values('4','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('4','FPS','M','75','2013')";
-
-$q10 = "Insert into Games(Title, Price, updatedAt) Values('Starcraft II','39.99','5')";
-$q9 = "Insert into Inventory(GSerial, InStock, NumSold) Values('5','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('5','RTS','T','85','2010')";
-
-$q12 = "Insert into Games(Title, Price, updatedAt) Values('Diablo III','39.99','6')";
-$q11 = "Insert into Inventory(GSerial, InStock, NumSold) Values('6','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('6','Action-RPG','M','75','2012')";
-
-$q16 = "Insert into Games(Title, Price, updatedAt) Values('Warcraft III : BattleChest','19.99','7')";
-$q15 = "Insert into Inventory(GSerial, InStock, NumSold) Values('7','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('7','RTS','T','89','2004')";
-
-$q18 = "Insert into Games(Title, Price, updatedAt) Values('The Settlers VII','9.99','8')";
-$q17 = "Insert into Inventory(GSerial, InStock, NumSold) Values('8','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('8','RTS','E','87','2010')";
-
-$q20 = "Insert into Games(Title, Price, updatedAt) Values('Total War Rome 2','59.99','9')";
-$q19 = "Insert into Inventory(GSerial, InStock, NumSold) Values('9','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('9','RTS','M','91','2013')";
-
-$q22 = "Insert into Games(Title, Price, updatedAt) Values('Xcomm enemy unknown','19.99','10')";
-$q21 = "Insert into Inventory(GSerial, InStock, NumSold) Values('10','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('10','RTS','M','75','2012')";
-
-$q26 = "Insert into Games(Title, Price, updatedAt) Values('Mario Party: Island Tour','39.99','11')";
-$q25 = "Insert into Inventory(GSerial, InStock, NumSold) Values('11','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('11','Family-Party','E','75','2013')";
-
-$q28 = "Insert into Games(Title, Price, updatedAt) Values('Guild Wars 2','59.99','12')";
-$q27 = "Insert into Inventory(GSerial, InStock, NumSold) Values('12','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('12','MMORPG','T','89','2012')";
-
-$q30 = "Insert into Games(Title, Price, updatedAt) Values('Pokemon White','29.99','13')";
-$q29 = "Insert into Inventory(GSerial, InStock, NumSold) Values('13','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('13','RPG-Adventure','E','89','2010')";
-
-$q32 = "Insert into Games(Title, Price, updatedAt) Values('Pokemon Black','29.99','14')";
-$q31 = "Insert into Inventory(GSerial, InStock, NumSold) Values('14','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('14','RPG-Adventure','E','89','2010')";
-
-$q34 = "Insert into Games(Title, Price, updatedAt) Values('Crysis 3','29.99','15')";
-$q33 = "Insert into Inventory(GSerial, InStock, NumSold) Values('15','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('15','FPS','M','87','2013')";
-
-$q36 = "Insert into Games(Title, Price, updatedAt) Values('Company of Heroes 2','59.99','16')";
-$q35 = "Insert into Inventory(GSerial, InStock, NumSold) Values('16','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('16','RTS','M','94','2013')";
-
-$q38 = "Insert into Games(Title, Price, updatedAt) Values('Prince of Persia : The forgotten Sand','49.50','17')";
-$q37 = "Insert into Inventory(GSerial, InStock, NumSold) Values('17','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('17','Action-Adventure','T','75','2010')";
-
-$q40 = "Insert into Games(Title, Price, updatedAt) Values('Lego Batman 2','19.99','18')";
-$q39 = "Insert into Inventory(GSerial, InStock, NumSold) Values('18','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('18','Action-Adventure','E','77','2012')";
-
-$q42 = "Insert into Games(Title, Price, updatedAt) Values('Lego Lord of the Ring','29.99','19')";
-$q41 = "Insert into Inventory(GSerial, InStock, NumSold) Values('19','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('19','Action-Adventure','E','78','2013')";
-
-$q44 = "Insert into Games(Title, Price, updatedAt) Values('Lego Pirates of the Carribean','19.99','20')";
-$q42 = "Insert into Inventory(GSerial, InStock, NumSold) Values('20','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('20','Action-Adventure','E','81','2011')";
-
-$q46 = "Insert into Games(Title, Price, updatedAt) Values('Lego Marvel Super heroes','29.99','21')";
-$q45 = "Insert into Inventory(GSerial, InStock, NumSold) Values('21','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('21','Action-Adventure','E','89','2013')";
-
-$q48 = "Insert into Games(Title, Price, updatedAt) Values('Lego StarWars III','19.99','22')";
-$q47 = "Insert into Inventory(GSerial, InStock, NumSold) Values('22','100','5')";
-$q12 = "Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('22','Action-Adventure','E','91','2011')";*/
-
-/*$q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','54.50','". date("Y-m-d H:i:s") ."')";
-$q1 = "Insert into Inventory(GSerial, InStock, NumSold) Values('1','10','5')";
-$q4 = "Insert into Games(Title, Price, updatedAt) Values('Super Mario','49.50','". date("Y-m-d H:i:s") ."')";
-$q3 = "Insert into Inventory Values('111','10','5')";
-$q6 = "Insert into Games(Title, Price, updatedAt) Values('Pokemon','112','49.50','2')";
-$q5 = "Insert into Inventory Values('112','10','5')";
-$q8 = "Insert into Games(Title, Price, updatedAt) Values('Final Fantasy','113','49.50','2')";
-$q7 = "Insert into Inventory Values('113','10','5')";
-
-if(mysqli_query($con,$q1))
-{
-    echo "Database my_db was successfully dropped\n";
-} else {
-    echo 'Error dropping database: ' . mysqli_error($con) . "\n";
-}
-
-if(mysqli_query($con,$q2))
-{
-    echo "Database my_db was successfully dropped\n";
-} else {
-    echo 'Error dropping database: ' . mysqli_error($con) . "\n";
-}
-
-mysqli_query($con,$q3);
-
-mysqli_query($con,$q4);
-
-mysqli_query($con,$q5);
-
-mysqli_query($con,$q6);
-
-mysqli_query($con,$q7);
-
-mysqli_query($con,$q8);*/
 
 mysqli_close($con);
 ?>
