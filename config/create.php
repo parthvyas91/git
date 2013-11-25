@@ -390,7 +390,7 @@ Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('2',
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Call of Duty Ghosts','59.99',@now);
 Insert into Inventory(GSerial, InStock, NumSold) Values('3','100','5');
-Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('1003','FPS','M','92','2013');
+Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('3','FPS','M','92','2013');
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Battlefield 4','59.99',@now);
 Insert into Inventory(GSerial, InStock, NumSold) Values('4','100','5');
