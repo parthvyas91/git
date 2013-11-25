@@ -31,7 +31,7 @@ if (mysqli_query($con,$query))
 mysqli_select_db($con, 'GameStore');
 
 // Create tables
-$create_games = "CREATE TABLE `Games`(`Title` VARCHAR(40) NOT NULL,`GSerial` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,`Price` FLOAT(2,2) NOT NULL,`updatedAt` DATETIME) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+$create_games = "CREATE TABLE `Games`(`Title` VARCHAR(40) NOT NULL,`GSerial` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,`Price` FLOAT(10,2) NOT NULL,`updatedAt` DATETIME) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $create_inventory = "CREATE TABLE `Inventory`(`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY,`InStock` INT NOT NULL DEFAULT 0,`NumSold` INT NOT NULL DEFAULT 0,CONSTRAINT FOREIGN KEY(`GSerial`) REFERENCES `Games`(`GSerial`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $create_gamedetails = "CREATE TABLE `GameDetails`(`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY, `Genre` VARCHAR(10) NOT NULL, `ESRBRating` VARCHAR(3) NOT NULL, `GameScore` INT, `Year` YEAR NOT NULL, CONSTRAINT FOREIGN KEY(`GSerial`) REFERENCES `Games`(`GSerial`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $create_customers = "CREATE TABLE `Customers`(`FirstName` VARCHAR(15) NOT NULL, `MidInitial` VARCHAR(1), `LastName` VARCHAR(15) NOT NULL, `Email` VARCHAR(50) NOT NULL, `Age` INT NOT NULL, `CustomerID` INT UNSIGNED NOT NULL AUTO_INCREMENT, `Gender` CHAR(1), PRIMARY KEY(`CustomerID`,`Email`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"; //Make sure to check email doesn't exist in relation
@@ -191,11 +191,13 @@ if (mysqli_multi_query($con, $listByLess)) {
 /* Get rid of results of query */
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
-$cancelOrder = "DROP PROCEDURE IF EXISTS `cancel`;
-CREATE PROCEDURE `cancel`(IN `order` INT)
+$cancelOrder = "DROP PROCEDURE IF EXISTS `cancelOrder`;
+CREATE PROCEDURE `cancelOrder`(IN `order` INT UNSIGNED)
 BEGIN
+BEGIN TRNASACTION;
 DELETE FROM `Orders`
 WHERE OrderID = order;
+COMMIT;
 END;";
 
 if (mysqli_multi_query($con, $cancelOrder)) {
@@ -280,7 +282,7 @@ if (mysqli_multi_query($con, $listByAge)) {
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
 $insertGame = "DROP PROCEDURE IF EXISTS `insert`;
-CREATE PROCEDURE `insert` (IN `t` VARCHAR(40), IN `p` FLOAT(2,2), IN `u` DATETIME)
+CREATE PROCEDURE `insert` (IN `t` VARCHAR(40), IN `p` FLOAT(10,2), IN `u` DATETIME)
 BEGIN
 INSERT INTO `Games`(`Title`,`Price`,`updatedAt`) VALUES(`t`,`p`,`u`);
 END;";
