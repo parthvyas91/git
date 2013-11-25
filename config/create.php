@@ -31,11 +31,11 @@ if (mysqli_query($con,$query))
 mysqli_select_db($con, 'GameStore');
 
 // Create tables
-$create_games = "CREATE TABLE `Games`(`Title` VARCHAR(40) NOT NULL,`GSerial` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,`Price` FLOAT(2,2) NOT NULL,`updatedAt` DATETIME);";
-$create_inventory = "CREATE TABLE `Inventory`(`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY,`InStock` INT NOT NULL DEFAULT 0,`NumSold` INT NOT NULL DEFAULT 0,CONSTRAINT FOREIGN KEY(`GSerial`) REFERENCES `Games`(`GSerial`));";
-$create_gamedetails = "CREATE TABLE `GameDetails`(`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY, `Genre` VARCHAR(10) NOT NULL, `ESRBRating` VARCHAR(3) NOT NULL, `GameScore` INT, `Year` YEAR NOT NULL, CONSTRAINT FOREIGN KEY(`GSerial`) REFERENCES `Games`(`GSerial`));";
-$create_customers = "CREATE TABLE `Customers`(`FirstName` VARCHAR(15) NOT NULL, `MidInitial` VARCHAR(1), `LastName` VARCHAR(15) NOT NULL, `Email` VARCHAR(50) NOT NULL, `Age` INT NOT NULL, `CustomerID` INT UNSIGNED NOT NULL AUTO_INCREMENT, `Gender` CHAR(1), PRIMARY KEY(`CustomerID`,`Email`));"; //Make sure to check email doesn't exist in relation
-$create_orders = "CREATE TABLE `Orders`(`OrderID` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `CustomerID` INT UNSIGNED NOT NULL, `GSerial` INT UNSIGNED NOT NULL, `NumBought` INT NOT NULL, CHECK (`CustomerID` IN (SELECT `CustomerID` FROM `Customers`)), CONSTRAINT `instock` CHECK (`NumBought` <= (SELECT `InStock` FROM `Inventory` WHERE `Inventory`.`GSerial` = `GSerial`)));";
+$create_games = "CREATE TABLE `Games`(`Title` VARCHAR(40) NOT NULL,`GSerial` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,`Price` FLOAT(2,2) NOT NULL,`updatedAt` DATETIME) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+$create_inventory = "CREATE TABLE `Inventory`(`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY,`InStock` INT NOT NULL DEFAULT 0,`NumSold` INT NOT NULL DEFAULT 0,CONSTRAINT FOREIGN KEY(`GSerial`) REFERENCES `Games`(`GSerial`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+$create_gamedetails = "CREATE TABLE `GameDetails`(`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY, `Genre` VARCHAR(10) NOT NULL, `ESRBRating` VARCHAR(3) NOT NULL, `GameScore` INT, `Year` YEAR NOT NULL, CONSTRAINT FOREIGN KEY(`GSerial`) REFERENCES `Games`(`GSerial`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+$create_customers = "CREATE TABLE `Customers`(`FirstName` VARCHAR(15) NOT NULL, `MidInitial` VARCHAR(1), `LastName` VARCHAR(15) NOT NULL, `Email` VARCHAR(50) NOT NULL, `Age` INT NOT NULL, `CustomerID` INT UNSIGNED NOT NULL AUTO_INCREMENT, `Gender` CHAR(1), PRIMARY KEY(`CustomerID`,`Email`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"; //Make sure to check email doesn't exist in relation
+$create_orders = "CREATE TABLE `Orders`(`OrderID` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `CustomerID` INT UNSIGNED NOT NULL, `GSerial` INT UNSIGNED NOT NULL, `NumBought` INT NOT NULL, CHECK (`CustomerID` IN (SELECT `CustomerID` FROM `Customers`)), CONSTRAINT `instock` CHECK (`NumBought` <= (SELECT `InStock` FROM `Inventory` WHERE `Inventory`.`GSerial` = `GSerial`))) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 // Execute multi_query
 if (mysqli_query($con, $create_games)) {
     echo "Successfully created table Games...\n";
@@ -63,13 +63,47 @@ if (mysqli_query($con, $create_orders)) {
     die("Error creating Orders: " . mysqli_error($con) . "\n");
 }
 
+$orderTrigger = "DROP TRIGGER IF EXISTS `Order`;
+DELIMITER // 
+CREATE TRIGGER `Order` 
+AFTER INSERT ON `Orders` 
+FOR EACH ROW 
+BEGIN
+UPDATE `Inventory` SET InStock = InStock - NEW.NumBought, NumSold = NumSold + NEW.NumBought 
+WHERE Inventory.GSerial = NEW.GSerial
+END //
+DELIMITER ;";
 
-$orderTrigger = "CREATE TRIGGER order AFTER INSERT on Orders FOR EACH ROW BEGIN
-update Inventory set InStock = InStock - NEW. NumBought, NumSold = NumSold + NEW.NumBought WHERE Inventory.GSerial = NEW.GSerial END;";
+if (mysqli_multi_query($con, $orderTrigger)) {
+    echo "Successfully created Order trigger...\n";
+} else {
+    die("Error creating trigger (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
 
-$cancelOrderTrigger = "CREATE TRIGGER CancelledOrder AFTER DELETE ON Orders FOR EACH ROW BEGIN UPDATE Inventory SET InStock = InStock + OLD.NumBought, NumSold = NumSold - Old.NumBought WHERE Inventory.GSerial = OLD.GSerial END;";
+$cancelOrderTrigger = "DROP TRIGGER IF EXISTS 'CancelledOrder';
+DELIMITER //
+CREATE TRIGGER `CancelledOrder` 
+AFTER DELETE ON `Orders` 
+FOR EACH ROW 
+BEGIN 
+UPDATE `Inventory` SET InStock = InStock + OLD.NumBought, NumSold = NumSold - OLD.NumBought 
+WHERE Inventory.GSerial = OLD.GSerial
+END //
+DELIMITER ;";
 
-$listByGenre = "CREATE PROCEDURE listGamesByGenre(IN g VARCHAR(40)) BEGIN SELECT Title, Year, Genre, Price FROM Game INNER JOIN GameDetail using(GSerial) WHERE Genre=g ORDER BY Title DESC END;";
+if (mysqli_multi_query($con, $cancelOrderTrigger)) {
+    echo "Successfully created cancelOrderTrigger trigger...\n";
+} else {
+    die("Error creating trigger (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+$listByGenre = "DELIMITER //
+CREATE PROCEDURE `listGamesByGenre`(IN `g` VARCHAR(40)) 
+BEGIN 
+SELECT `Title`, `Year`, `Genre`, `Price` FROM `Games` INNER JOIN `GameDetails` using(`GSerial`) WHERE Genre=g 
+ORDER BY `Title` DESC 
+END //
+DELIMITER ;";
 
 /*
 $q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','54.50','". date("Y-m-d H:i:s") ."')";
