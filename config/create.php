@@ -64,15 +64,13 @@ if (mysqli_query($con, $create_orders)) {
 }
 
 $orderTrigger = "DROP TRIGGER IF EXISTS `Order`;
-DELIMITER // 
 CREATE TRIGGER `Order` 
 AFTER INSERT ON `Orders` 
 FOR EACH ROW 
 BEGIN
 UPDATE `Inventory` SET InStock = InStock - NEW.NumBought, NumSold = NumSold + NEW.NumBought 
-WHERE Inventory.GSerial = NEW.GSerial
-END //
-DELIMITER ;";
+WHERE Inventory.GSerial = NEW.GSerial;
+END;";
 
 if (mysqli_multi_query($con, $orderTrigger)) {
     echo "Successfully created Order trigger...\n";
@@ -84,15 +82,13 @@ if (mysqli_multi_query($con, $orderTrigger)) {
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
 $cancelOrderTrigger = "DROP TRIGGER IF EXISTS `CancelledOrder`;
-DELIMITER //
 CREATE TRIGGER `CancelledOrder` 
 AFTER DELETE ON `Orders` 
 FOR EACH ROW 
 BEGIN 
 UPDATE `Inventory` SET InStock = InStock + OLD.NumBought, NumSold = NumSold - OLD.NumBought 
-WHERE Inventory.GSerial = OLD.GSerial
-END //
-DELIMITER ;";
+WHERE Inventory.GSerial = OLD.GSerial;
+END;";
 
 if (mysqli_multi_query($con, $cancelOrderTrigger)) {
     echo "Successfully created cancelOrderTrigger trigger...\n";
@@ -104,13 +100,11 @@ if (mysqli_multi_query($con, $cancelOrderTrigger)) {
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
 $listByGenre = "DROP PROCEDURE IF EXISTS `listGamesByGenre`;
-DELIMITER //
 CREATE PROCEDURE `listGamesByGenre`(IN `g` VARCHAR(40)) 
 BEGIN 
 SELECT `Title`, `Year`, `Genre`, `Price` FROM `Games` INNER JOIN `GameDetails` using(`GSerial`) WHERE Genre=g 
-ORDER BY `Title` DESC 
-END //
-DELIMITER ;";
+ORDER BY `Title` DESC;
+END;";
 
 if (mysqli_multi_query($con, $listByGenre)) {
     echo "Successfully created listByGenre procedure...\n";
@@ -157,4 +151,5 @@ mysqli_query($con,$q7);
 
 mysqli_query($con,$q8);
 */
+mysqli_close($con);
 ?>
