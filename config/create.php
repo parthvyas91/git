@@ -77,7 +77,7 @@ DELIMITER ;";
 if (mysqli_multi_query($con, $orderTrigger)) {
     echo "Successfully created Order trigger...\n";
 } else {
-    die("Error creating trigger (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+    die("Error creating Order trigger (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
 }
 
 $cancelOrderTrigger = "DROP TRIGGER IF EXISTS 'CancelledOrder';
@@ -94,7 +94,7 @@ DELIMITER ;";
 if (mysqli_multi_query($con, $cancelOrderTrigger)) {
     echo "Successfully created cancelOrderTrigger trigger...\n";
 } else {
-    die("Error creating trigger (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+    die("Error creating cancelOrder trigger (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
 }
 
 $listByGenre = "DELIMITER //
