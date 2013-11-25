@@ -107,9 +107,274 @@ ORDER BY `Title` DESC;
 END;";
 
 if (mysqli_multi_query($con, $listByGenre)) {
-    echo "Successfully created listByGenre procedure...\n";
+    echo "Successfully created listGamesByGenre procedure...\n";
 } else {
-    die("Error creating listByGenre procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+    die("Error creating listGamesByGenre procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$listByESRB = "DROP PROCEDURE IF EXISTS `listGamesByESRB`;
+CREATE PROCEDURE `listGamesByESRB`(IN `rating` VARCHAR(3))
+BEGIN
+SELECT Title, Genre, ESRBRating, GameScore, Price
+FROM `Games` INNER JOIN `GameDetails` using(`GSerial`)
+WHERE ESRBRating <> rating
+ORDER BY Title ASC;
+END;";
+
+if (mysqli_multi_query($con, $listByESRB)) {
+    echo "Successfully created listGamesByESRB procedure...\n";
+} else {
+    die("Error creating listGamesByESRB procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+// Regular query
+$listByPopularity = "DROP PROCEDURE IF EXISTS `listGamesByPopularity`;
+CREATE PROCEDURE `listGamesByPopularity`()
+BEGIN
+SELECT Title, Genre, ESRBRating, GameScore, Price
+FROM (`Games` INNER JOIN `Inventory` ON Games.GSerial=Inventory.GSerial)
+INNER JOIN GameDetails ON Games.GSerial=GameDetails.GSerial
+ORDER BY NumSold DESC;
+END;";
+
+if (mysqli_multi_query($con, $listByPopularity)) {
+    echo "Successfully created listGamesByPopularity procedure...\n";
+} else {
+    die("Error creating listGamesByPopularity procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+// Regular query
+$listByRating = "Select Title , GameScore
+FROM Games `g` JOIN GameDetails `gd` on g.GSerial = gd.GSerial
+ORDER BY GameScore DESC;";
+
+$listByYear = "DROP PROCEDURE IF EXISTS `listGamesAfterYear`;
+CREATE PROCEDURE `listGamesAfterYear`(IN yearMade YEAR)
+BEGIN
+SELECT Title, Genre, ESRBRating, GameScore, Price
+FROM Games `g` INNER JOIN GameDetails `gd` using(GSerial)
+WHERE Year >= yearMade;
+END;";
+
+if (mysqli_multi_query($con, $listByYear)) {
+    echo "Successfully created listGamesAfterYear procedure...\n";
+} else {
+    die("Error creating listGamesAfterYear procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$listByLess = "DROP PROCEDURE IF EXISTS `listGamesUnder`;
+CREATE PROCEDURE `listGamesUnder`(IN `thePrice` FLOAT(2,2))
+BEGIN
+SELECT Title, Genre, ESRBRating, GameScore, Price
+FROM Games `g` INNER JOIN GameDetails `gd` using(GSerial)
+WHERE price <= thePrice;
+END;";
+
+if (mysqli_multi_query($con, $listByLess)) {
+    echo "Successfully created listGamesUnder procedure...\n";
+} else {
+    die("Error creating listGamesUnder procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$cancelOrder = "DROP PROCEDURE IF EXISTS `cancel`;
+CREATE PROCEDURE `cancel`(IN `order` INT UNSIGNED)
+BEGIN
+DELETE FROM Orders
+WHERE OrderID = order;
+END;";
+
+if (mysqli_multi_query($con, $cancelOrder)) {
+    echo "Successfully created cancel procedure...\n";
+} else {
+    die("Error creating cancel procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$checkSold = "DROP PROCEDURE IF EXISTS `copiesSold`;
+CREATE PROCEDURE `copiesSold`(IN `theTitle` VARCHAR(40))
+BEGIN
+SELECT Title, NumSold, GameScore
+FROM (Games `g` INNER JOIN Inventory `i` ON g.GSerial = i.GSerial)
+INNER JOIN GameDetails `gd` ON g.GSerial = gd.GSerial
+WHERE Title = theTitle;
+END;";
+
+if (mysqli_multi_query($con, $checkSold)) {
+    echo "Successfully created copiesSold procedure...\n";
+} else {
+    die("Error creating copiesSold procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$inStock = "DROP PROCEDURE IF EXISTS `copiesInStock`;
+CREATE PROCEDURE `copiesInStock`(IN `theTitle` VARCHAR(40))
+BEGIN
+SELECT InStock
+FROM Games `g` JOIN Inventory `i` ON g.GSerial = i.GSerial
+WHERE Title = theTitle;
+END;";
+
+if (mysqli_multi_query($con, $inStock)) {
+    echo "Successfully created copiesInStock procedure...\n";
+} else {
+    die("Error creating copiesInStock procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$listByAgeAndGender = "DROP PROCEDURE IF EXISTS `AgeAndGender`;
+CREATE PROCEDURE `AgeAndGender` (IN `birth` INT, IN `g` CHAR(1))
+BEGIN
+SELECT Title, Genre, ESRBRating, GameScore, Price
+FROM (`Customers` INNER JOIN `Orders` using(CustomerID)
+WHERE Customers.Gender=g AND birth >= Customers.Age - 3 AND birth <= Customers.Age + 3) AS `c` 
+INNER JOIN (`Games` INNER JOIN `GameDetails` using(GSerial)) AS `t`
+ON c.GSerial = t.GSerial;
+END;";
+
+if (mysqli_multi_query($con, $listByAgeAndGender)) {
+    echo "Successfully created AgeAndGender procedure...\n";
+} else {
+    die("Error creating AgeAndGender procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$listByAge = "DROP PROCEDURE IF EXISTS `listGamesByAge`;
+CREATE PROCEDURE `listGamesByAge` (IN `a` INT)
+BEGIN
+SELECT Title, Genre, ESRBRating, GameScore, Price
+FROM (Games INNER JOIN Orders using(GSerial)) AS `w`
+INNER JOIN Customers ON w.GSerial = Customers.GSerial
+WHERE Age = a;
+END;";
+
+if (mysqli_multi_query($con, $listByAge)) {
+    echo "Successfully created listGamesByAge procedure...\n";
+} else {
+    die("Error creating listGamesByAge procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$insertGame = "DROP PROCEDURE IF EXISTS `insert`;
+CREATE PROCEDURE `insert` (IN `t` VARCHAR(40), IN `p` FLOAT(2,2), IN `u` DATETIME)
+BEGIN
+INSERT INTO `Games`(`Title`,`Price`,`updatedAt`) VALUES(`t`,`p`,`u`);
+END;";
+
+if (mysqli_multi_query($con, $insertGame)) {
+    echo "Successfully created insert procedure...\n";
+} else {
+    die("Error creating insert procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+// Query to get GSerial of newly inserted game
+$getID = "SELECT GSerial FROM Games WHERE Title = t;"
+$result = mysqli_query($con, $getID);
+$row = mysqli_fetch_arry($result, MYSQLI_ASSOC);
+
+$insertGameInventory = "DROP PROCEDURE IF EXISTS `inven`;
+CREATE PROCEDURE `inven` (IN `g` INT UNSIGNED, IN `i` INT)
+BEGIN
+INSERT INTO `Inventory`(`GSerial`,`InStock`) VALUES(`g`,`i`);
+END;";
+
+if (mysqli_multi_query($con, $insertGameInventory)) {
+    echo "Successfully created inven procedure...\n";
+} else {
+    die("Error creating inven procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$insertGameDetails = "DROP PROCEDURE IF EXISTS `det`;
+CREATE PROCEDURE `det` (IN `g` INT UNSIGNED, `gen` VARCHAR(10), `esrb` VARCHAR(3), `y` YEAR)
+BEGIN
+INSERT INTO `GameDetails`(`GSerial`,`Genre`,`ESRBRating`,`Year`) VALUES (`g`,`gen`,`esrb`,`y`);
+END;";
+
+if (mysqli_multi_query($con, $insertGameDetails)) {
+    echo "Successfully created det procedure...\n";
+} else {
+    die("Error creating det procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$updateScore = "DROP PROCEDURE IF EXISTS `updateScore`;
+CREATE PROCEDURE `updateScore` (IN `g` INT UNSIGNED, IN `score` INT)
+BEGIN
+UPDATE `GameDetails` SET GameScore = score
+WHERE GSerial = g;
+END;";
+
+if (mysqli_multi_query($con, $updateScore)) {
+    echo "Successfully created updateScore procedure...\n";
+} else {
+    die("Error creating updateScore procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$updateStock = "DROP PROCEDURE IF EXISTS `updateStock`;
+CREATE PROCEDURE `updateStock` (IN `stock` INT, IN `serial` INT UNSIGNED)
+BEGIN
+UPDATE `Inventory`
+SET InStock = InStock + stock
+WHERE GSerial = serial;
+END;";
+
+if (mysqli_multi_query($con, $updateStock)) {
+    echo "Successfully created updateStock procedure...\n";
+} else {
+    die("Error creating updateStock procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+/* Get rid of results of query */
+while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$listCustomersOfGame = "DROP PROCEDURE IF EXISTS `customersOfGame`;
+CREATE PROCEDURE `customersOfGame`(IN `gameTitle` VARCHAR(40))
+BEGIN
+SELECT `FirstName`, `MidInitial`, `LastName`, `Age`, `CustomerID`, `Gender`
+FROM (Games INNER JOIN Orders using(GSerial))
+INNER JOIN Customers using(CustomerID)
+WHERE Title = gameTitle;
+END;";
+
+if (mysqli_multi_query($con, $listCustomersOfGame)) {
+    echo "Successfully created customersOfGame procedure...\n";
+} else {
+    die("Error creating customersOfGame procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
 }
 
 /* Get rid of results of query */
@@ -117,12 +382,12 @@ while (mysqli_more_results($con) && mysqli_next_result($con));
 
 /*
 $q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','54.50','". date("Y-m-d H:i:s") ."')";
-$q1 = "Insert into Inventory Values('123','10','5')";
-$q4 = "Insert into Game Values('SUPER MARIO','111','49.50','2')";
+$q1 = "Insert into Inventory(GSerial, InStock, NumSold) Values('1','10','5')";
+$q4 = "Insert into Games(Title, Price, updatedAt) Values('Super Mario','49.50','". date("Y-m-d H:i:s") ."')";
 $q3 = "Insert into Inventory Values('111','10','5')";
-$q6 = "Insert into Game Values('Pokemon','112','49.50','2')";
+$q6 = "Insert into Games(Title, Price, updatedAt) Values('Pokemon','112','49.50','2')";
 $q5 = "Insert into Inventory Values('112','10','5')";
-$q8 = "Insert into Game Values('Final Fantasy','113','49.50','2')";
+$q8 = "Insert into Games(Title, Price, updatedAt) Values('Final Fantasy','113','49.50','2')";
 $q7 = "Insert into Inventory Values('113','10','5')";
 
 if(mysqli_query($con,$q1))
