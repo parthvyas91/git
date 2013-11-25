@@ -31,23 +31,37 @@ if (mysqli_query($con,$query))
 mysqli_select_db($con, 'GameStore');
 
 // Create tables
-$create_tables= <<<EOF
-CREATE TABLE Games(Title VARCHAR(40) NOT NULL,GSerial INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,Price FLOAT(2,2) NOT NULL,updatedAt DATETIME);
-CREATE TABLE Inventory(GSerial INT UNSIGNED NOT NULL PRIMARY KEY,InStock INT NOT NULL DEFAULT 0,NumSold INT NOT NULL DEFAULT 0,CONSTRAINT FOREIGN KEY(GSerial) REFERENCES Game(GSerial));
-CREATE TABLE GameDetails(GSerial INT UNSIGNED NOT NULL PRIMARY KEY, Genre VARCHAR(10) NOT NULL, ESRBRating VARCHAR(3) NOT NULL, GameScore INT, Year YEAR NOT NULL, CONSTRAINT FOREIGN KEY(GSerial) REFERENCES Game(GSerial));
-CREATE TABLE Customers(FirstName VARCHAR(15) NOT NULL, MidInitial VARCHAR(1), LastName VARCHAR(15) NOT NULL, Email VARCHAR(50) NOT NULL PRIMARY KEY, Age INT NOT NULL, CustomerID INT UNSIGNED NOT NULL AUTO_INCREMENT, Gender CHAR(1), CHECK (Email NOT IN (SELECT Email in Customers)));
-CREATE TABLE OrdersPlaced(OrderID INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, CustomerID INT UNSIGNED NOT NULL, GSerial INT UNSIGNED NOT NULL, NumBought INT NOT NULL, CHECK (CustomerID IN (SELECT CustomerID FROM Customers)), CHECK (NumBought <= (SELECT InStock IN Inventory WHERE Inventory.GSerial = GSerial)));
-EOF;
-
+$create_games = "CREATE TABLE Games(Title VARCHAR(40) NOT NULL,GSerial INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,Price FLOAT(2,2) NOT NULL,updatedAt DATETIME);";
+$create_inventory = "CREATE TABLE Inventory(GSerial INT UNSIGNED NOT NULL PRIMARY KEY,InStock INT NOT NULL DEFAULT 0,NumSold INT NOT NULL DEFAULT 0,CONSTRAINT FOREIGN KEY(GSerial) REFERENCES Game(GSerial));";
+$create_gamedetails = "CREATE TABLE GameDetails(GSerial INT UNSIGNED NOT NULL PRIMARY KEY, Genre VARCHAR(10) NOT NULL, ESRBRating VARCHAR(3) NOT NULL, GameScore INT, Year YEAR NOT NULL, CONSTRAINT FOREIGN KEY(GSerial) REFERENCES Game(GSerial));";
+$create_customers = "CREATE TABLE Customers(FirstName VARCHAR(15) NOT NULL, MidInitial VARCHAR(1), LastName VARCHAR(15) NOT NULL, Email VARCHAR(50) NOT NULL PRIMARY KEY, Age INT NOT NULL, CustomerID INT UNSIGNED NOT NULL AUTO_INCREMENT, Gender CHAR(1), CHECK (Email NOT IN (SELECT Email in Customers))); ";
+$create_orders = "CREATE TABLE Orders(OrderID INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, CustomerID INT UNSIGNED NOT NULL, GSerial INT UNSIGNED NOT NULL, NumBought INT NOT NULL, CHECK (CustomerID IN (SELECT CustomerID FROM Customers)), CHECK (NumBought <= (SELECT InStock IN Inventory WHERE Inventory.GSerial = GSerial)));";
 // Execute multi_query
-if (mysqli_multi_query($con, $create_tables)) {
-    echo "Successfully created tables Games, Inventory, GameDetails, Customers, and OrdersPlaced...\n";
+if (mysqli_query($con, $create_games)) {
+    echo "Successfully created table Games...\n";
 } else {
-    die("Error creating tables:" . mysqli_error($con) . "\n");
+    die("Error creating Games:" . mysqli_error($con) . "\n");
 }
-
-/* Get rid of results of query */
-while (mysqli_more_results($con) && mysqli_next_result($con));
+if (mysqli_query($con, $create_inventory)) {
+    echo "Successfully created table Inventory...\n";
+} else {
+    die("Error creating Inventory:" . mysqli_error($con) . "\n");
+}
+if (mysqli_query($con, $create_gamedetails)) {
+    echo "Successfully created table GameDetails...\n";
+} else {
+    die("Error creating GameDetails:" . mysqli_error($con) . "\n");
+}
+if (mysqli_query($con, $create_customers)) {
+    echo "Successfully created table Customers...\n";
+} else {
+    die("Error creating Customers:" . mysqli_error($con) . "\n");
+}
+if (mysqli_query($con, $create_orders)) {
+    echo "Successfully created table Orders...\n";
+} else {
+    die("Error creating Orders:" . mysqli_error($con) . "\n");
+}
 
 /*
 $q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','54.50','". date("Y-m-d H:i:s") ."')";
