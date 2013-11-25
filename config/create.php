@@ -63,6 +63,14 @@ if (mysqli_query($con, $create_orders)) {
     die("Error creating Orders:" . mysqli_error($con) . "\n");
 }
 
+
+$orderTrigger = "CREATE TRIGGER order AFTER INSERT on Orders FOR EACH ROW BEGIN
+update Inventory set InStock = InStock - NEW. NumBought, NumSold = NumSold + NEW.NumBought WHERE Inventory.GSerial = NEW.GSerial END;";
+
+$cancelOrderTrigger = "CREATE TRIGGER CancelledOrder AFTER DELETE ON Orders FOR EACH ROW BEGIN UPDATE Inventory SET InStock = InStock + OLD.NumBought, NumSold = NumSold - Old.NumBought WHERE Inventory.GSerial = OLD.GSerial END;";
+
+$listByGenre = "CREATE PROCEDURE listGamesByGenre(IN g VARCHAR(40)) BEGIN SELECT Title, Year, Genre, Price FROM Game INNER JOIN GameDetail using(GSerial) WHERE Genre=g ORDER BY Title DESC END;";
+
 /*
 $q2 = "Insert into Games(Title, Price, updatedAt) Values('Grand Theft Auto V','54.50','". date("Y-m-d H:i:s") ."')";
 $q1 = "Insert into Inventory Values('123','10','5')";
