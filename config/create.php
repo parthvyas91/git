@@ -295,7 +295,7 @@ if (mysqli_multi_query($con, $insertGame)) {
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
 // Query to get GSerial of newly inserted game
-$getID = "SELECT GSerial FROM Games WHERE Title = t;"
+$getID = "SELECT GSerial FROM Games WHERE Title = t;";
 $result = mysqli_query($con, $getID);
 $row = mysqli_fetch_arry($result, MYSQLI_ASSOC);
 
