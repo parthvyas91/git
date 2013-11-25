@@ -192,15 +192,11 @@ if (mysqli_multi_query($con, $listByLess)) {
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
 $cancelOrder = "DROP PROCEDURE IF EXISTS `cancelOrder`;
-DELIMITER ;;
 CREATE PROCEDURE `cancelOrder`(IN `order` INT UNSIGNED)
 BEGIN
 DELETE FROM `Orders`
-WHERE OrderID = order
-LIMIT 1;
-END
-;;
-DELIMITER ;";
+WHERE OrderID = `order`;
+END;";
 
 if (mysqli_multi_query($con, $cancelOrder)) {
     echo "Successfully created cancelOrder procedure...\n";
@@ -250,9 +246,9 @@ $listByAgeAndGender = "DROP PROCEDURE IF EXISTS `AgeAndGender`;
 CREATE PROCEDURE `AgeAndGender` (IN `birth` INT, IN `g` CHAR(1))
 BEGIN
 SELECT Title, Genre, ESRBRating, GameScore, Price
-FROM (`Customers` INNER JOIN `Orders` using(CustomerID)
+FROM (SELECT * FROM `Customers` INNER JOIN `Orders` using(CustomerID)
 WHERE Customers.Gender=g AND birth >= Customers.Age - 3 AND birth <= Customers.Age + 3) AS `c` 
-INNER JOIN (`Games` INNER JOIN `GameDetails` using(GSerial)) AS `t`
+INNER JOIN (SELECT * FROM `Games` INNER JOIN `GameDetails` using(GSerial)) AS `t`
 ON c.GSerial = t.GSerial;
 END;";
 
@@ -269,7 +265,7 @@ $listByAge = "DROP PROCEDURE IF EXISTS `listGamesByAge`;
 CREATE PROCEDURE `listGamesByAge` (IN `a` INT)
 BEGIN
 SELECT Title, Genre, ESRBRating, GameScore, Price
-FROM (Games INNER JOIN Orders using(GSerial)) AS `w`
+FROM (SELECT * FROM `Games` INNER JOIN `Orders` using(GSerial)) AS `w`
 INNER JOIN Customers ON w.GSerial = Customers.GSerial
 WHERE Age = a;
 END;";
