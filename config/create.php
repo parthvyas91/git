@@ -192,18 +192,20 @@ if (mysqli_multi_query($con, $listByLess)) {
 while (mysqli_more_results($con) && mysqli_next_result($con));
 
 $cancelOrder = "DROP PROCEDURE IF EXISTS `cancelOrder`;
+DELIMITER ;;
 CREATE PROCEDURE `cancelOrder`(IN `order` INT UNSIGNED)
 BEGIN
-BEGIN TRNASACTION;
 DELETE FROM `Orders`
-WHERE OrderID = order;
-COMMIT;
-END;";
+WHERE OrderID = order
+LIMIT 1;
+END
+;;
+DELIMITER ;";
 
 if (mysqli_multi_query($con, $cancelOrder)) {
-    echo "Successfully created cancel procedure...\n";
+    echo "Successfully created cancelOrder procedure...\n";
 } else {
-    die("Error creating cancel procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+    die("Error creating cancelOrder procedure (" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
 }
 
 /* Get rid of results of query */
