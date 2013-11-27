@@ -510,13 +510,13 @@ UPDATE `GamesArchive`
 SET insertedAt = @now; 
 END;";
 
-if (mysqli_multi_query($con, $procedure))
+if (mysqli_multi_query($con, $procedure)) {
     echo "Successfully created archive procedure...\n";
 } else {
     die("Error creating archive procedure(" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
 }
 
-if (mysqli_multi_query($con, $archive))
+if (mysqli_multi_query($con, $archive)) {
     echo "Successfully created archive event...\n";
 } else {
     die("Error creating archive event(" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
