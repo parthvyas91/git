@@ -2,7 +2,7 @@
 
 require_once('config.php');
 
-$con=mysqli_connect($conf['db_host'],$conf['db_user'],$conf['db_pass']);
+$con=mysqli_connect("127.0.0.1",USERNAME,PASSWORD);
 
 // Check connection
 if (mysqli_connect_errno($con))
@@ -36,6 +36,7 @@ $create_inventory = "CREATE TABLE `Inventory`(`GSerial` INT UNSIGNED NOT NULL PR
 $create_gamedetails = "CREATE TABLE `GameDetails`(`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY, `Genre` VARCHAR(10) NOT NULL, `ESRBRating` VARCHAR(3) NOT NULL, `GameScore` INT, `Year` YEAR NOT NULL, CONSTRAINT FOREIGN KEY(`GSerial`) REFERENCES `Games`(`GSerial`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 $create_customers = "CREATE TABLE `Customers`(`FirstName` VARCHAR(15) NOT NULL, `MidInitial` VARCHAR(1), `LastName` VARCHAR(15) NOT NULL, `Email` VARCHAR(50) NOT NULL, `Age` INT NOT NULL, `CustomerID` INT UNSIGNED NOT NULL AUTO_INCREMENT, `Gender` CHAR(1), PRIMARY KEY(`CustomerID`,`Email`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"; //Make sure to check email doesn't exist in relation
 $create_orders = "CREATE TABLE `Orders`(`OrderID` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `CustomerID` INT UNSIGNED NOT NULL, `GSerial` INT UNSIGNED NOT NULL, `NumBought` INT NOT NULL, CHECK (`CustomerID` IN (SELECT `CustomerID` FROM `Customers`)), CONSTRAINT `instock` CHECK (`NumBought` <= (SELECT `InStock` FROM `Inventory` WHERE `Inventory`.`GSerial` = `GSerial`))) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+$create_archive = "CREATE TABLE `GamesArchive`(`Title` VARCHAR(40) NOT NULL,`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY,`Price` FLOAT(10,2) NOT NULL,`insertedAt` DATETIME) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 // Execute multi_query
 if (mysqli_query($con, $create_games)) {
     echo "Successfully created table Games...\n";
@@ -61,6 +62,11 @@ if (mysqli_query($con, $create_orders)) {
     echo "Successfully created table Orders...\n";
 } else {
     die("Error creating Orders: " . mysqli_error($con) . "\n");
+}
+if (mysqli_query($con, $create_archive)) {
+    echo "Successfully created table GamesArchive...\n";
+} else {
+    die("Error creating GamesArchive: " . mysqli_error($con) . "\n");
 }
 
 $orderTrigger = "DROP TRIGGER IF EXISTS `Order`;
@@ -467,7 +473,13 @@ Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('21'
 SET @now := NOW();
 Insert into Games(Title, Price, updatedAt) Values('Lego StarWars III','19.99',@now);
 Insert into Inventory(GSerial, InStock, NumSold) Values('22','100','0');
-Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('22','Action-Adventure','E','91','2011');";
+Insert into GameDetails(GSerial, Genre, ESRBRating, GameScore, Year) Values('22','Action-Adventure','E','91','2011');
+Insert into Customers(FirstName,MidInitial,LastName,Email,Age,Gender) Values('Joe','J','Poe','JohnPoe@Zmail.com','20','M');
+Insert into Customers(FirstName,MidInitial,LastName,Email,Age,Gender) Values('Smith','G','Johnson','SmithJohnson@Ymail.com','16','M');
+Insert into Customers(FirstName,MidInitial,LastName,Email,Age,Gender) Values('Jane','A','Smith','Jane@Zmail.com','22','F');
+Insert into Orders(OrderID,CustomerID,GSerial,NumBought) Values('3','1','1');
+Insert into Orders(OrderID,CustomerID,GSerial,NumBought) Values('1','2','1');
+Insert into Orders(OrderID,CustomerID,GSerial,NumBought) Values('2','1','2');";
 
 if (mysqli_multi_query($con, $multi_query)) {
     echo "Successfully populated database...\n";
@@ -477,6 +489,38 @@ if (mysqli_multi_query($con, $multi_query)) {
 
 /* Get rid of results of query */
 while (mysqli_more_results($con) && mysqli_next_result($con));
+
+$archive = "SET GLOBAL event_scheduler = ON;
+CREATE EVENT GameStore.archiveGames
+ON SCHEDULE EVERY 5 MINUTE STARTS CURRENT_TIMESTAMP + INTERVAL 1 MINUTE
+DO
+    CALL archiveGames();";
+
+$procedure = "DROP PROCEDURE IF EXISTS `archiveGames`;
+CREATE PROCEDURE `archiveGames`()
+BEGIN
+DROP TABLE IF EXISTS `GamesArchive`;
+CREATE TABLE `GamesArchive`(`Title` VARCHAR(40) NOT NULL,`GSerial` INT UNSIGNED NOT NULL PRIMARY KEY,`Price` FLOAT(10,2) NOT NULL,`insertedAt` DATETIME) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET @now := NOW();
+INSERT INTO `GamesArchive`(`Title`,`GSerial`,`Price`)
+SELECT `Title`,`GSerial`,`Price`
+FROM `Games`
+WHERE updatedAt < @now - INTERVAL 5 MINUTE;
+UPDATE `GamesArchive`
+SET insertedAt = @now; 
+END;";
+
+if (mysqli_multi_query($con, $procedure))
+    echo "Successfully created archive procedure...\n";
+} else {
+    die("Error creating archive procedure(" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
+
+if (mysqli_multi_query($con, $archive))
+    echo "Successfully created archive event...\n";
+} else {
+    die("Error creating archive event(" . mysqli_errno($con) . "): " . mysqli_error($con) . "\n");
+}
 
 mysqli_close($con);
 ?>
